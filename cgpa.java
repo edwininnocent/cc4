@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class CGPACalculator {
+public class cgpa {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         double[] marks = new double[4];
