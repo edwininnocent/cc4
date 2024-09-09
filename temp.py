@@ -1,45 +1,43 @@
-def celsius_to_fahrenheit(celsius):
-    return (celsius * 9/5) + 32
+from flask import Flask, request, render_template
+import os
 
-def fahrenheit_to_celsius(fahrenheit):
-    return (fahrenheit - 32) * 5/9
+app = Flask(__name__)
 
-def celsius_to_kelvin(celsius):
-    return celsius + 273.15
+# Define arithmetic functions
+def add(x, y):
+    return x + y
 
-def kelvin_to_celsius(kelvin):
-    return kelvin - 273.15
+def subtract(x, y):
+    return x - y
 
-def fahrenheit_to_kelvin(fahrenheit):
-    return (fahrenheit - 32) * 5/9 + 273.15
+def multiply(x, y):
+    return x * y
 
-def kelvin_to_fahrenheit(kelvin):
-    return (kelvin - 273.15) * 9/5 + 32
+def divide(x, y):
+    if y == 0:
+        return "Error: Division by zero is undefined."
+    return x / y
 
-print("Select conversion:")
-print("1. Celsius to Fahrenheit")
-print("2. Fahrenheit to Celsius")
-print("3. Celsius to Kelvin")
-print("4. Kelvin to Celsius")
-print("5. Fahrenheit to Kelvin")
-print("6. Kelvin to Fahrenheit")
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    result = None
+    if request.method == 'POST':
+        num1 = request.form.get('num1', type=float)
+        num2 = request.form.get('num2', type=float)
+        operation = request.form.get('operation')
 
-choice = input("Enter choice (1/2/3/4/5/6): ")
-
-if choice in ('1', '2', '3', '4', '5', '6'):
-    temp = float(input("Enter temperature: "))
+        if operation == '1':
+            result = f"{num1} + {num2} = {add(num1, num2)}"
+        elif operation == '2':
+            result = f"{num1} - {num2} = {subtract(num1, num2)}"
+        elif operation == '3':
+            result = f"{num1} * {num2} = {multiply(num1, num2)}"
+        elif operation == '4':
+            result = f"{num1} / {num2} = {divide(num1, num2)}"
+        else:
+            result = "Invalid operation selected."
     
-    if choice == '1':
-        print(f"{temp} Celsius is equal to {celsius_to_fahrenheit(temp)} Fahrenheit")
-    elif choice == '2':
-        print(f"{temp} Fahrenheit is equal to {fahrenheit_to_celsius(temp)} Celsius")
-    elif choice == '3':
-        print(f"{temp} Celsius is equal to {celsius_to_kelvin(temp)} Kelvin")
-    elif choice == '4':
-        print(f"{temp} Kelvin is equal to {kelvin_to_celsius(temp)} Celsius")
-    elif choice == '5':
-        print(f"{temp} Fahrenheit is equal to {fahrenheit_to_kelvin(temp)} Kelvin")
-    elif choice == '6':
-        print(f"{temp} Kelvin is equal to {kelvin_to_fahrenheit(temp)} Fahrenheit")
-else:
-    print("Invalid input")
+    return render_template('index.html', result=result)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
