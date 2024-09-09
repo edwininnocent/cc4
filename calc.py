@@ -1,50 +1,42 @@
-# Function to add two numbers
+from flask import Flask, request, render_template
+
+app = Flask(__name__)
+
+# Define arithmetic functions
 def add(x, y):
     return x + y
 
-# Function to subtract two numbers
 def subtract(x, y):
     return x - y
 
-# Function to multiply two numbers
 def multiply(x, y):
     return x * y
 
-# Function to divide two numbers
 def divide(x, y):
+    if y == 0:
+        return "Error: Division by zero is undefined."
     return x / y
 
-print("Select operation:")
-print("1. Add")
-print("2. Subtract")
-print("3. Multiply")
-print("4. Divide")
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    result = None
+    if request.method == 'POST':
+        num1 = request.form.get('num1', type=float)
+        num2 = request.form.get('num2', type=float)
+        operation = request.form.get('operation')
 
-while True:
-    # Take input from the user
-    choice = input("Enter choice(1/2/3/4): ")
+        if operation == '1':
+            result = f"{num1} + {num2} = {add(num1, num2)}"
+        elif operation == '2':
+            result = f"{num1} - {num2} = {subtract(num1, num2)}"
+        elif operation == '3':
+            result = f"{num1} * {num2} = {multiply(num1, num2)}"
+        elif operation == '4':
+            result = f"{num1} / {num2} = {divide(num1, num2)}"
+        else:
+            result = "Invalid operation selected."
+    
+    return render_template('index.html', result=result)
 
-    # Check if choice is one of the four options
-    if choice in ('1', '2', '3', '4'):
-        try:
-            num1 = float(input("Enter first number: "))
-            num2 = float(input("Enter second number: "))
-        except ValueError:
-            print("Invalid input. Please enter a number.")
-            continue
-
-        if choice == '1':
-            print(f"{num1} + {num2} = {add(num1, num2)}")
-        elif choice == '2':
-            print(f"{num1} - {num2} = {subtract(num1, num2)}")
-        elif choice == '3':
-            print(f"{num1} * {num2} = {multiply(num1, num2)}")
-        elif choice == '4':
-            print(f"{num1} / {num2} = {divide(num1, num2)}")
-
-        # Check if user wants another calculation
-        next_calculation = input("Let's do next calculation? (yes/no): ")
-        if next_calculation.lower() != 'yes':
-            break
-    else:
-        print("Invalid Input")
+if __name__ == '__main__':
+    app.run(debug=True)
